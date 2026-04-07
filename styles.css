@@ -1,0 +1,835 @@
+/* ══════════════════════════════════════════════════════════════
+   FlashCard Lab — styles.css
+   Sections:
+   1. CSS Custom Properties (variables)
+   2. Reset & Base
+   3. Utilities
+   4. Layout (header, #app grid, footer)
+   5. Sidebar & Deck List
+   6. Main Content & Deck View
+   7. Toolbar & Search
+   8. Flip Card (3D animation)
+   9. Navigation Controls
+  10. Card List (preview items)
+  11. Modals
+  12. Badges & Misc
+  13. Empty States
+  14. Focus Styles
+  15. Dark Mode
+  16. Responsive (mobile)
+══════════════════════════════════════════════════════════════ */
+
+/* ── 1. CSS CUSTOM PROPERTIES ────────────────────────────── */
+:root {
+  /* Brand */
+  --color-primary:       #4f46e5;
+  --color-primary-hover: #4338ca;
+  --color-primary-text:  #ffffff;
+  --color-danger:        #dc2626;
+  --color-danger-hover:  #b91c1c;
+
+  /* Surfaces */
+  --color-bg:        #f1f5f9;
+  --color-surface:   #ffffff;
+  --color-surface-2: #f8fafc;
+  --color-border:    #e2e8f0;
+
+  /* Text */
+  --color-text:      #0f172a;
+  --color-text-muted:#64748b;
+
+  /* Sidebar */
+  --sidebar-width:       260px;
+  --sidebar-bg:          #1e293b;
+  --sidebar-text:        #cbd5e1;
+  --sidebar-item-hover:  #334155;
+  --sidebar-item-active: #4f46e5;
+  --sidebar-label-color: #94a3b8;
+
+  /* Flashcard */
+  --card-radius:  14px;
+  --card-shadow:  0 8px 32px rgba(0, 0, 0, 0.12);
+  --card-height:  280px;
+  --card-back-bg: #4f46e5;
+  --card-back-text: #ffffff;
+
+  /* Modal */
+  --overlay-bg: rgba(15, 23, 42, 0.60);
+  --modal-radius: 12px;
+
+  /* Timing */
+  --flip-duration:    0.5s;
+  --transition-fast:  0.15s ease;
+  --transition-base:  0.2s ease;
+
+  /* Focus ring */
+  --focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.45);
+
+  /* Header & Footer */
+  --header-height: 60px;
+  --footer-height: 44px;
+}
+
+/* ── 2. RESET & BASE ─────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+h1, h2, h3 {
+  line-height: 1.25;
+}
+
+/* ── 3. UTILITIES ────────────────────────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── 4. LAYOUT ───────────────────────────────────────────── */
+#app-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--header-height);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  padding: 0 1.25rem;
+}
+
+.app-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: -0.02em;
+}
+
+#app {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  flex: 1;
+  min-height: calc(100vh - var(--header-height) - var(--footer-height));
+}
+
+#app-footer {
+  height: var(--footer-height);
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-hint {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+kbd {
+  display: inline-block;
+  padding: 0.1em 0.4em;
+  font-size: 0.75em;
+  font-family: monospace;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  box-shadow: 0 1px 0 var(--color-border);
+}
+
+/* ── 5. SIDEBAR & DECK LIST ─────────────────────────────── */
+#sidebar {
+  background: var(--sidebar-bg);
+  border-right: 1px solid rgba(255,255,255,0.05);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 1rem 1rem 0.5rem;
+}
+
+.sidebar-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--sidebar-label-color);
+}
+
+#deck-list {
+  flex: 1;
+  padding: 0.25rem 0.5rem 1rem;
+}
+
+.deck-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--sidebar-text);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background var(--transition-fast), color var(--transition-fast);
+  user-select: none;
+  margin-bottom: 2px;
+}
+
+.deck-item:hover {
+  background: var(--sidebar-item-hover);
+  color: #fff;
+}
+
+.deck-item[aria-current="true"] {
+  background: var(--sidebar-item-active);
+  color: #fff;
+  font-weight: 600;
+}
+
+.deck-item-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.deck-item-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deck-item-count {
+  font-size: 0.75rem;
+  background: rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 0 0.4em;
+  flex-shrink: 0;
+}
+
+.deck-item[aria-current="true"] .deck-item-count {
+  background: rgba(255,255,255,0.25);
+}
+
+/* Sidebar empty state */
+.sidebar-empty {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: var(--sidebar-label-color);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+/* ── 6. MAIN CONTENT & DECK VIEW ─────────────────────────── */
+#main-content {
+  overflow-y: auto;
+  padding: 1.5rem;
+  background: var(--color-bg);
+}
+
+#deck-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.deck-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.deck-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ── 7. TOOLBAR & SEARCH ─────────────────────────────────── */
+#toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 180px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 0.45rem 0.75rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.875rem;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring);
+}
+
+.search-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Remove default search cancel button on webkit */
+.search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+.search-count {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  min-width: 60px;
+}
+
+.toolbar-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ── 8. FLIP CARD (3D ANIMATION) ─────────────────────────── */
+#study-area {
+  margin-bottom: 1.25rem;
+}
+
+/* Outer wrapper: perspective context */
+.card {
+  perspective: 1200px;
+  height: var(--card-height);
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto 0.75rem;
+  cursor: pointer;
+  /* outline handled by :focus-visible */
+  outline: none;
+}
+
+/* Inner wrapper: the element that actually rotates */
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform var(--flip-duration) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Toggle class on .card to flip .card-inner */
+.card.is-flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+/* Shared styles for both faces */
+.card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden; /* Safari */
+  border-radius: var(--card-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  overflow: auto;
+}
+
+/* Front face */
+.card-front {
+  background: var(--color-surface);
+  box-shadow: var(--card-shadow);
+  border: 1.5px solid var(--color-border);
+}
+
+/* Back face: pre-rotated so it shows correctly when parent flips */
+.card-back {
+  background: var(--card-back-bg);
+  color: var(--card-back-text);
+  box-shadow: var(--card-shadow);
+  transform: rotateY(180deg);
+}
+
+.card-text {
+  font-size: 1.15rem;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.card-counter {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  min-height: 1.2em;
+}
+
+/* ── 9. NAVIGATION CONTROLS ──────────────────────────────── */
+.nav-controls {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+/* ── 10. CARD LIST (PREVIEW ITEMS) ───────────────────────── */
+#card-list-section {
+  border-top: 1.5px solid var(--color-border);
+  padding-top: 1rem;
+}
+
+.card-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.card-list-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+#card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card-list-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: 10px;
+  padding: 0.6rem 0.875rem;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.card-list-item:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(79,70,229,0.08);
+}
+
+.card-list-content {
+  flex: 1;
+  overflow: hidden;
+}
+
+.card-list-front {
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-text);
+}
+
+.card-list-back {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.card-list-actions {
+  display: flex;
+  gap: 0.375rem;
+  flex-shrink: 0;
+}
+
+/* ── 11. MODALS ──────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 1rem;
+}
+
+/* Entrance animation triggered when hidden attribute is removed */
+.modal-overlay:not([hidden]) {
+  animation: fadeIn var(--transition-base);
+}
+
+.modal-box {
+  background: var(--color-surface);
+  border-radius: var(--modal-radius);
+  padding: 1.75rem;
+  width: min(480px, calc(100vw - 2rem));
+  box-shadow: 0 24px 64px rgba(0,0,0,0.20);
+  animation: slideUp 0.2s ease;
+}
+
+.modal-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  color: var(--color-text);
+}
+
+.modal-desc {
+  color: var(--color-text-muted);
+  margin-bottom: 1.25rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.625rem;
+  justify-content: flex-end;
+  margin-top: 1.25rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(16px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ── BUTTONS ─────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast), color var(--transition-fast);
+  white-space: nowrap;
+  text-decoration: none;
+  line-height: 1.25;
+  border: 1.5px solid transparent;
+}
+
+.btn-sm {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  border-radius: 6px;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-primary-text);
+  border-color: var(--color-primary);
+}
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+
+.btn-secondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+.btn-secondary:hover {
+  background: var(--color-surface-2);
+  border-color: #cbd5e1;
+}
+
+.btn-danger {
+  background: var(--color-danger);
+  color: #fff;
+  border-color: var(--color-danger);
+}
+.btn-danger:hover {
+  background: var(--color-danger-hover);
+  border-color: var(--color-danger-hover);
+}
+
+/* ── FORM ELEMENTS ───────────────────────────────────────── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.form-input {
+  padding: 0.55rem 0.75rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  width: 100%;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.error-msg {
+  font-size: 0.8rem;
+  color: var(--color-danger);
+  font-weight: 500;
+}
+
+/* ── 12. BADGES ──────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 0.1em 0.55em;
+  vertical-align: middle;
+  margin-left: 0.3em;
+}
+
+/* ── 13. EMPTY STATES ────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.empty-state-inline {
+  padding: 2rem 1rem;
+  border: 1.5px dashed var(--color-border);
+  border-radius: var(--card-radius);
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto 0.75rem;
+  min-height: var(--card-height);
+}
+
+.empty-state-icon {
+  font-size: 2.5rem;
+  opacity: 0.5;
+}
+
+.empty-state h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.empty-state p {
+  color: var(--color-text-muted);
+  max-width: 340px;
+  line-height: 1.6;
+}
+
+/* ── 14. FOCUS STYLES ────────────────────────────────────── */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: 4px;
+}
+
+.card:focus-visible {
+  box-shadow: var(--focus-ring);
+  border-radius: var(--card-radius);
+}
+
+.btn:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.deck-item:focus-visible {
+  box-shadow: var(--focus-ring);
+  outline: none;
+}
+
+/* ── 15. DARK MODE ───────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Surfaces */
+    --color-bg:        #0f172a;
+    --color-surface:   #1e293b;
+    --color-surface-2: #1e293b;
+    --color-border:    #334155;
+
+    /* Text */
+    --color-text:      #f1f5f9;
+    --color-text-muted:#94a3b8;
+
+    /* Card */
+    --card-shadow:     0 8px 32px rgba(0, 0, 0, 0.5);
+    --overlay-bg:      rgba(2, 6, 23, 0.75);
+  }
+
+  .card-front {
+    border-color: #334155;
+  }
+
+  .btn-secondary {
+    background: #1e293b;
+    color: #f1f5f9;
+    border-color: #475569;
+  }
+  .btn-secondary:hover {
+    background: #334155;
+    border-color: #64748b;
+  }
+
+  kbd {
+    background: #1e293b;
+    border-color: #475569;
+    box-shadow: 0 1px 0 #475569;
+  }
+}
+
+/* ── 16. RESPONSIVE ──────────────────────────────────────── */
+@media (max-width: 700px) {
+  #app {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  #sidebar {
+    /* Horizontal deck strip */
+    flex-direction: column;
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-height: 120px;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  #deck-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    padding: 0.25rem 0.5rem;
+    gap: 0.25rem;
+    overflow-x: auto;
+  }
+
+  .deck-item {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .sidebar-header {
+    display: none;
+  }
+
+  .card {
+    max-width: 100%;
+    height: 220px;
+    --card-height: 220px;
+  }
+
+  #deck-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  #toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-wrapper {
+    width: 100%;
+  }
+
+  .toolbar-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .modal-box {
+    padding: 1.25rem;
+  }
+}

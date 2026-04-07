@@ -1,0 +1,41 @@
+================================================================================
+FlashCard Lab — Claude Progress Log
+================================================================================
+
+[2026-04-06 SESSION START]
+Task: Build the complete browser-based Flashcard Study App from scratch per
+      "AI Coding Challenge Requirements.md".
+
+Files created this session:
+  - index.html      Full HTML shell: header, sidebar, main, 3 modals, footer
+  - styles.css      CSS variables, grid layout, 3D flip animation, dark mode,
+                    responsive breakpoint, focus styles
+  - app.js          Single IIFE: state, LocalStorage, CRUD mutations, render
+                    functions, ModalManager, focus trap, delegated events,
+                    keyboard shortcuts, import/export
+  - README.md       Project overview, architecture, setup, reflection
+  - FEATURES.json   12 features tracked (all passes: false — pending QA)
+  - claude-progress.txt  This file
+  - init.sh         Python/npx dev server launcher
+
+Architecture decisions:
+  - No frameworks; no build tools; single-page app
+  - All event listeners attached once in initEventListeners() — zero leaks
+  - Delegated listeners for deck list and card list dynamic content
+  - Modal focus trap scoped to modal element (not document); returns cleanup fn
+  - getVisibleCards() never mutates state (search is read-only view)
+  - Flip state reset in navigate() — single authoritative location
+  - LocalStorage wrapped in try/catch for safe parse fallback
+
+Known AI pitfalls addressed:
+  1. Flip state desync — fixed: navigate() always removes .is-flipped
+  2. Duplicate event listeners — fixed: delegation + single initEventListeners()
+  3. Focus trap on document — fixed: scoped to modal element with cleanup
+  4. Search mutating data — fixed: getVisibleCards() is a pure filter
+  5. LocalStorage parse errors — fixed: try/catch with graceful fallback
+
+[2026-04-06 SESSION END]
+Outcome: Full implementation complete. All 12 features implemented.
+Next step: Manual QA pass — mark each feature passes: true in FEATURES.json
+           after verifying each step listed in the feature entry.
+================================================================================

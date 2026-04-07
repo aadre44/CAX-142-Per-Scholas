@@ -1,0 +1,137 @@
+{
+  "version": "1.0.0",
+  "features": [
+    {
+      "id": "multi-deck-management",
+      "category": "decks",
+      "description": "Support multiple decks; create, edit, and delete decks via modal",
+      "steps": [
+        "Click '+ New Deck' and enter a name — deck appears in sidebar",
+        "Click a deck in the sidebar to make it active (highlighted)",
+        "Click 'Edit Name' to rename the active deck",
+        "Click 'Delete Deck' and confirm — deck is removed"
+      ],
+      "passes": false
+    },
+    {
+      "id": "card-crud",
+      "category": "cards",
+      "description": "Create, edit, and delete cards with front/back text per deck",
+      "steps": [
+        "Click '+ New Card', fill Front and Back, save — card appears in list",
+        "Click 'Edit' on a card item — modal pre-fills, save updates the card",
+        "Click 'Delete' on a card item and confirm — card is removed"
+      ],
+      "passes": false
+    },
+    {
+      "id": "flip-animation",
+      "category": "study",
+      "description": "CSS 3D flip animation toggled by click, button, or Space key",
+      "steps": [
+        "Click the card or 'Flip' button — card rotates 180° showing back face",
+        "Flip runs at 60fps; back face does not bleed through front",
+        "Navigating to next/prev card resets flip to front face"
+      ],
+      "passes": false
+    },
+    {
+      "id": "study-navigation",
+      "category": "study",
+      "description": "Prev / Next navigation and Shuffle for study mode",
+      "steps": [
+        "Click 'Prev' / 'Next' or press ArrowLeft / ArrowRight to navigate",
+        "Card counter shows current position (e.g., 3 / 12)",
+        "Click 'Shuffle' to randomize card order for the session"
+      ],
+      "passes": false
+    },
+    {
+      "id": "keyboard-shortcuts",
+      "category": "accessibility",
+      "description": "Space = flip, ArrowLeft/Right = navigate, ESC = close modal",
+      "steps": [
+        "Press Space to flip when no modal is open and focus is not in a text input",
+        "Press ArrowLeft / ArrowRight to navigate cards",
+        "Press ESC to close any open modal"
+      ],
+      "passes": false
+    },
+    {
+      "id": "search-filter",
+      "category": "search",
+      "description": "Case-insensitive keyword search filtering cards by front or back text, debounced 300ms",
+      "steps": [
+        "Type in the search box — card list and study card filter immediately",
+        "Search count shows number of matches",
+        "Clear search — full card set restores; underlying data is unchanged"
+      ],
+      "passes": false
+    },
+    {
+      "id": "localstorage-persistence",
+      "category": "data",
+      "description": "Decks, cards, and last active deck persisted to LocalStorage with safe fallback",
+      "steps": [
+        "Create decks and cards, reload the page — data is intact",
+        "Last active deck is restored on reload",
+        "Corrupt LocalStorage manually — app falls back to empty state without crashing"
+      ],
+      "passes": false
+    },
+    {
+      "id": "responsive-layout",
+      "category": "ui",
+      "description": "Responsive sidebar + main grid; sidebar collapses to top strip on mobile",
+      "steps": [
+        "Resize to >700px — sidebar is fixed-width column on left",
+        "Resize to <=700px — sidebar becomes a horizontal scrolling strip on top",
+        "All interactions remain usable on mobile screen width"
+      ],
+      "passes": false
+    },
+    {
+      "id": "dark-mode",
+      "category": "ui",
+      "description": "Dark mode via prefers-color-scheme CSS media query with custom properties",
+      "steps": [
+        "Toggle OS/browser to dark mode — all surfaces, text, and borders switch",
+        "Focus rings and button states are visible in dark mode"
+      ],
+      "passes": false
+    },
+    {
+      "id": "accessible-modals",
+      "category": "accessibility",
+      "description": "Modals with focus trap, ESC to close, aria-modal, focus return to opener",
+      "steps": [
+        "Open any modal — focus moves inside the modal",
+        "Tab cycles within modal; Shift+Tab reverses — focus never leaves modal",
+        "Press ESC or Cancel — modal closes and focus returns to the button that opened it"
+      ],
+      "passes": false
+    },
+    {
+      "id": "empty-states",
+      "category": "ui",
+      "description": "Meaningful empty state messages for: no decks, no cards, no search results",
+      "steps": [
+        "Start with no decks — 'No decks yet' message in sidebar, landing empty state in main",
+        "Select a deck with no cards — 'No cards yet' state shown instead of flashcard",
+        "Search with no matches — 'No results' state shown"
+      ],
+      "passes": false
+    },
+    {
+      "id": "import-export-json",
+      "category": "data",
+      "description": "Export active deck as JSON; import a deck JSON file",
+      "steps": [
+        "Click 'Export JSON' — downloads a .json file with deck and cards",
+        "Click 'Import JSON' and select the exported file — deck is re-created with new IDs",
+        "Importing a malformed file shows an error alert without crashing"
+      ],
+      "passes": false
+    }
+  ]
+}
