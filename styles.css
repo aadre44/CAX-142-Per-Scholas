@@ -508,6 +508,15 @@ kbd {
 }
 
 /* ── 11. MODALS ──────────────────────────────────────────── */
+
+/* Must explicitly set display:none for [hidden] because the
+   display:flex below would otherwise override the browser's
+   default UA stylesheet rule for hidden, causing invisible
+   modals to still intercept pointer events. */
+.modal-overlay[hidden] {
+  display: none;
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;
